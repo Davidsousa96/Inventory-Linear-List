@@ -43,7 +43,7 @@ void addItem(){
     scanf(" %[^\n]s", newItem.name);
     printf("Descricao: ");
     scanf(" %[^\n]s", newItem.detail);
-    printf("Tipo: ");
+    printf("Tipo (0-Arma; 1-Armadura; 2-Anel; 3-Amuleto): ");
     scanf("%d", &newItem.type);
     printf("Quantidade: ");
     scanf("%d", &newItem.amount);
@@ -107,6 +107,30 @@ void allSearch(){
     }
 
     system("pause");
+}
+
+void delete(){
+	int cont=0, achou=0;
+	char nomeCompara[20];
+	printf("Digite o nome do item que voce quer excluir.\n");
+	scanf(" %[^\n]s", nomeCompara);
+	
+	for(cont=0; cont<totalItems; cont++){
+		if(strcmp(nomeCompara, item[cont].name)==0){
+			strcpy(item[cont].name, item[totalItems-1].name);
+			strcpy(item[cont].detail, item[totalItems-1].detail);
+			item[cont].type = item[totalItems-1].type;
+			item[cont].amount = item[totalItems-1].amount;
+			totalItems--;
+			achou = 1;
+			break;
+		}
+	}
+	
+	if(achou==0){
+		printf("Nao existe um item com o nome %s", nomeCompara);
+		getch();
+	}
 }
 
 void nameSearch(){
@@ -197,6 +221,7 @@ int main(){
                 addItem();
             break;
             case 2:
+            	delete();
             break;
             case 3:
                 allSearch();
