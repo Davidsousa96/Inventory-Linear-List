@@ -18,77 +18,6 @@ Item *item;
 int totalItems;
 FILE *file;
 
-/*void Delete(char* nome){
-
-	Item *aux, *anterior;
-	aux=head;
-	while(strcmp(aux->name,nome)!=0 && aux->next!=NULL){
-		anterior=aux;
-		aux=aux->next;
-	}
-	if(strcmp(aux->name,nome)==0){
-		if(aux==tail){
-			tail=anterior;
-			tail->next=NULL;
-			free(aux);
-		}else if(aux==head){
-			head=aux->next;
-			aux->next=NULL;
-			free(aux);
-		}else{
-			anterior->next=aux->next;
-			aux->next=NULL;
-			free(aux);
-		}
-	}else{
-		printf("Esse item nao existe.\n");
-	}
-
-
-}
-void Add(char* nome, char* detalhe, Type tipo, int qtd){
-
-	Item* item;
-	item = (Item*)malloc(sizeof(Item));
-
-	item->amount=qtd;
-	strcpy(item->detail,detalhe);
-	strcpy(item->name,nome);
-	item->type=tipo;
-
-	if(head==NULL)
-	{
-		head=item;
-		tail=item;
-	}else{
-		tail->next=item;
-		tail=item;
-	}
-	item->next=NULL;
-}
-void imprimeItem(Item* i){
-
-	printf("Nome: %s\n", i->name);
-	printf("Detalhes: %s\n", i->detail);
-	printf("Quantidade: %d\n", i->amount);
-}
-void inventario(){
-	if(head==NULL)
-	{
-		printf("Vazio\n");
-	}else{
-		Item *aux=head;
-		while(aux!=NULL)
-		{
-			imprimeItem(aux);
-			printf("\n");
-			if(aux->next!=NULL)
-				aux=aux->next;
-			else break;
-		}
-	}
-}*/
-
 void printManual(){
     printf("1 - Inserir Item\n");
     printf("2 - Excluir Item\n");
@@ -108,15 +37,45 @@ void printTypes(){
 
 void addItem(){
     system("cls || clear");
+    Item newItem;
+
     printf("Nome: ");
-    scanf(" %[^\n]s", item[totalItems].name);
+    scanf(" %[^\n]s", newItem.name);
     printf("Descricao: ");
-    scanf(" %[^\n]s", item[totalItems].detail);
+    scanf(" %[^\n]s", newItem.detail);
     printf("Tipo: ");
-    scanf(" %d", &item[totalItems].type);
+    scanf("%d", &newItem.type);
     printf("Quantidade: ");
-    scanf(" %d", &item[totalItems].amount);
-    totalItems++;
+    scanf("%d", &newItem.amount);
+
+    int found = check(newItem);
+
+    if(found == 0){
+        strcpy(item[totalItems].name, newItem.name);
+        strcpy(item[totalItems].detail, newItem.detail);
+        item[totalItems].type = newItem.type;
+        item[totalItems].amount = newItem.amount;
+        totalItems++;
+    }
+}
+
+int check (Item newItem) {
+    int i, found = 0;
+
+    for (i = 0; i < totalItems; i++){
+        if (strcmp(newItem.name, item[i].name) == 0){
+            if(item[i].amount < 99){
+                item[i].amount += newItem.amount;
+                if(item[i].amount > 99) {
+                    item[i].amount = 99;
+                }
+            }
+            found = 1;
+            break;
+        }
+    }
+
+    return found;
 }
 
 void allSearch(){
@@ -182,7 +141,7 @@ void nameSearch(){
             }
         }
         if(found == 0){
-            printf("O dado não existe.\n");
+            printf("O dado nï¿½o existe.\n");
         }
     } else {
         printf("Nao ha nenhum item no inventario.\n\n");
@@ -221,7 +180,7 @@ int main(){
 
     if(file == NULL){
         totalItems = 0;
-        item = (Item *)malloc(sizeof(Item) * leng);
+        item = (Item *)calloc(leng, sizeof(Item));
     } else {
         fread(&totalItems, sizeof(int), 1, file);
         item = (Item *)malloc(sizeof(Item) * leng);
