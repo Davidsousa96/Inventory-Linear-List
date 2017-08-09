@@ -1,6 +1,7 @@
 #include <stdio.h>
 #include <stdlib.h>
 #include <string.h>
+#include <ctype.h>
 
 const int leng = 15;
 
@@ -88,8 +89,25 @@ void inventario(){
 	}
 }*/
 
+void printManual(){
+    printf("1 - Inserir Item\n");
+    printf("2 - Excluir Item\n");
+    printf("3 - Listar Itens\n");
+    printf("4 - Buscar Por Nome\n");
+    printf("5 - Buscar Por Tipo\n");
+    printf("9 - Sair\n\n");
+}
+
+void printTypes(){
+    printf("0 - Arma\n");
+    printf("1 - Armadura\n");
+    printf("2 - Anel\n");
+    printf("3 - Amuleto\n");
+    printf("9 - Sair\n\n");
+}
+
 void addItem(){
-    system("cls");
+    system("cls || clear");
     printf("Nome: ");
     scanf(" %[^\n]s", item[totalItems].name);
     printf("Descricao: ");
@@ -103,51 +121,96 @@ void addItem(){
 
 void allSearch(){
     system("cls");
-    int i;
-    for(i=0; i<totalItems; i++){
-        printf("Nome: %s\n", item[i].name);
-        printf("Descricao: %s\n", item[i].detail);
-        switch(item[i].type){
-        case Armor:
-            printf("Tipo: Arma\n");
-            break;
-        case Weapon:
-            printf("Tipo: Armadura\n");
-            break;
-        case Ring:
-            printf("Tipo: Anel\n");
-            break;
-        case Amulet:
-            printf("Tipo: Amuleto\n");
-            break;
+    if(totalItems != 0){
+        int i;
+        for(i=0; i<totalItems; i++){
+            printf("Nome: %s\n", item[i].name);
+            printf("Descricao: %s\n", item[i].detail);
+            switch(item[i].type){
+            case Weapon:
+                printf("Tipo: Arma\n");
+                break;
+            case Armor:
+                printf("Tipo: Armadura\n");
+                break;
+            case Ring:
+                printf("Tipo: Anel\n");
+                break;
+            case Amulet:
+                printf("Tipo: Amuleto\n");
+                break;
+            }
+            printf("Quantidade: %d\n", item[i].amount);
+            printf("\n");
         }
-        printf("Quantidade: %d\n", item[i].amount);
-        printf("\n");
+    } else {
+        printf("Nao ha nenhum item no inventario.\n\n");
     }
+
     system("pause");
 }
 
 void nameSearch(){
+    system("cls");
+
+    if(totalItems != 0){
+        char nameItem[50];
+        int i, found = 0;
+        printf("Digite o nome do item: ");
+        scanf(" %[^\n]s\n", nameItem);
+        for(i=0; i<totalItems; i++){
+            if(strcmp(item[i].name, nameItem) == 0){
+                printf("Nome: %s\n", item[i].name);
+                printf("Descricao: %s\n", item[i].detail);
+                switch(item[i].type){
+                case Weapon:
+                    printf("Tipo: Arma\n");
+                    break;
+                case Armor:
+                    printf("Tipo: Armadura\n");
+                    break;
+                case Ring:
+                    printf("Tipo: Anel\n");
+                    break;
+                case Amulet:
+                    printf("Tipo: Amuleto\n");
+                    break;
+                }
+                printf("Quantidade: %d\n", item[i].amount);
+                printf("\n");
+                found = 1;
+            }
+        }
+        if(found == 0){
+            printf("O dado não existe.\n");
+        }
+    } else {
+        printf("Nao ha nenhum item no inventario.\n\n");
+    }
+    system("pause");
 }
 
 void typeSearch(){
-}
+    system("cls");
 
-void printManual(){
-    printf("1 - Inserir Item\n");
-    printf("2 - Excluir Item\n");
-    printf("3 - Listar Itens\n");
-    printf("4 - Buscar Item Por Nome\n");
-    printf("5 - Buscar Tipo\n");
-    printf("0 - Sair\n\n");
-}
+    if(totalItems != 0){
+        printTypes();
+        int i, typeItem;
+        printf("Digite o tipo para a busca: ");
+        scanf("%d", &typeItem);
+        for(i=0; i<totalItems; i++){
+            if(item[i].type == typeItem){
+                printf("Nome: %s\n", item[i].name);
+                printf("Descricao: %s\n", item[i].detail);
+                printf("Quantidade: %d\n", item[i].amount);
+                printf("\n");
+            }
+        }
+    } else {
+        printf("Nao ha nenhum item no inventario.\n\n");
+    }
 
-void printTypes(){
-    printf("1 - Arma\n");
-    printf("2 - Armadura\n");
-    printf("3 - Anél\n");
-    printf("4 - Amuleto\n");
-    printf("0 - Sair\n\n");
+    system("pause");
 }
 
 int main(){
@@ -186,9 +249,9 @@ int main(){
                 typeSearch();
             break;
         }
-    } while (option != 0);
+    } while (option != 9);
 
-    if(totalItems>0){
+    if(totalItems>=0){
         file = fopen("Inventory.dat","w");
         fwrite(&totalItems, sizeof(int), 1, file);
         fwrite(item, sizeof(Item), totalItems, file);
